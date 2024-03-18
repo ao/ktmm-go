@@ -1,6 +1,6 @@
 module github.com/ao/ktmm-go
 
-go 1.22.0
+go 1.16.0
 
 require (
 	github.com/gen2brain/shm v0.0.0-20230802011745-f2460f5984f7 // indirect
