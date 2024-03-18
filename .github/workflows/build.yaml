@@ -1,0 +1,43 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.16'
+
+    - name: Build for Mac
+      run: GOOS=darwin GOARCH=amd64 go build -o app_mac main.go
+
+    - name: Build for Linux
+      run: GOOS=linux GOARCH=amd64 go build -o app_linux main.go
+
+    - name: Build for Windows
+      run: GOOS=windows GOARCH=amd64 go build -o app_windows.exe main.go
+
+    - name: Create releases
+      id: create_releases
+      uses: ncipollo/release-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: |
+          app_mac:app_mac
+          app_linux:app_linux
+          app_windows.exe:app_windows.exe
+        tag: v${{ github.run_number }}
+        title: Release ${{ github.run_number }}
+        body: |
+          Changes in this release:
+          - Add description of changes here
